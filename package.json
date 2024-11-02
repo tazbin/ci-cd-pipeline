@@ -7,9 +7,9 @@
     "start": "node app",
     "dev": "nodemon app.js",
     "test": "jest",
-    "lint": "eslint .",
+    "lint:check": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --check .",
+    "format:check": "prettier --check .",
     "format:fix": "npx prettier --write ."
   },
   "keywords": [],

@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Run linter
-        run: npm run lint
+        run: npm run lint:check
 
   format:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
         run: npm install
 
       - name: Run formatting check
-        run: npm run format
+        run: npm run format:check
 
   test:
     runs-on: ubuntu-latest
