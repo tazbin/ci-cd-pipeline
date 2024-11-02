@@ -10,17 +10,8 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
+      - '3000:3000'
     restart: unless-stopped
-
-  test:
-    container_name: nodejs-api-test
-    build:
-      context: .
-      target: test
-    volumes:
-      - .:/app
-      - /app/node_modules
 
   prod:
     container_name: nodejs-api-prod
@@ -28,5 +19,5 @@ services:
       context: .
       target: production
     ports:
-      - "3000:3000"
+      - '3000:3000'
     restart: unless-stopped

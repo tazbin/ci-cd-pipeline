@@ -1,4 +1,4 @@
-import {sum} from '../math/index';
+import { sum } from '../math/index';
 
 describe('sum function', () => {
   test('adds 1 + 2 to equal 3', () => {

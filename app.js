@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 const app = express();
-import {sum} from './math/index.js';
+import { sum } from './math/index.js';
 
 app.use(morgan('combined'));
 
