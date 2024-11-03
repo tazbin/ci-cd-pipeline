@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  lint:
+  lint-format-test-checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,41 +18,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build and run linting
-        run: |
-          docker-compose build dev
-          docker-compose run dev npm run lint:check
+      - name: Build docker image
+        run: docker-compose build dev
 
-  format:
-    runs-on: ubuntu-latest
+      - name: Check linting
+        run: docker-compose run dev npm run lint:check
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Check formatting
+        run: docker-compose run dev npm run format:check
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Build and run formatting check
-        run: |
-          docker-compose build dev
-          docker-compose run dev npm run format:check
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Build and run tests
-        run: |
-          docker-compose build dev
-          docker-compose run dev npm run test
+      - name: Run unit test
+        run: docker-compose run dev npm run test
