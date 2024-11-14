@@ -18,6 +18,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Run linting
         run: docker compose run dev npm run lint:check
 
@@ -25,6 +27,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Run format check
         run: docker compose run dev npm run format:check
 
@@ -32,5 +36,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Run tests
         run: docker compose run dev npm run test
