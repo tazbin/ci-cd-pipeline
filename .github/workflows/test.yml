@@ -1,4 +1,4 @@
-name: CI
+name: CI-check-test
 
 on:
   pull_request:
@@ -13,13 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Docker Compose
+      - name: Build and run tests
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Build docker image
-        run: docker-compose build dev
-
-      - name: Check linting
-        run: docker-compose run dev npm run test
+          docker compose build dev
+          docker compose run dev npm run test
