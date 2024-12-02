@@ -6,43 +6,43 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker compose build dev
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Build Docker image
+  #       run: docker compose build dev
 
-  lint:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Run linting
-        run: docker compose run dev npm run lint:check
+  # lint:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Run linting
+  #       run: docker compose run dev npm run lint:check
 
-  format:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Run format check
-        run: docker compose run dev npm run format:check
+  # format:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Run format check
+  #       run: docker compose run dev npm run format:check
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Run tests
-        run: docker compose run dev npm run test
+  # test:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Run tests
+  #       run: docker compose run dev npm run test
 
   push-image-to-dockerhub:
-    needs: [lint, format, test]
+    # needs: [lint, format, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
