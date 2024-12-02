@@ -67,7 +67,7 @@ jobs:
           docker push mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
 
   deploy-prod-image:
-    needs: build-push-prod-image-to-dockerhub
+    needs: build-push-prod-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
