@@ -63,3 +63,15 @@ jobs:
           docker compose build dev
           docker tag ci-cd-pipeline-dev mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
           docker push mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
+
+      - name: Deploy to AWS-EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
+            docker stop example-app-api || true
+            docker rm example-app-api || true
+            docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
