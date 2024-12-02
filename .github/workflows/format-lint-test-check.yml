@@ -76,7 +76,6 @@ jobs:
       - name: Debug sha_short value
         run: echo "sha_short=${{ needs.push-image-to-dockerhub.outputs.sha_short }}"
 
-
       - name: Deploy to AWS-EC2
         uses: appleboy/ssh-action@master
         with:
