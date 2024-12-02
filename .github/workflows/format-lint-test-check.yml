@@ -79,6 +79,10 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             docker pull mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
-            docker stop example-app-api || true
-            docker rm example-app-api || true
+            if [ "$(docker ps -f name=example-app-api -q)" ]; then
+              docker stop example-app-api
+            fi
+            if [ "$(docker ps -a -f name=example-app-api -q)" ]; then
+              docker rm example-app-api
+            fi
             docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
