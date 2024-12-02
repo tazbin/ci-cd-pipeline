@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  build-dev-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,8 +14,8 @@ jobs:
       - name: Build Docker image
         run: docker compose build dev
 
-  lint:
-    needs: build
+  check-code-lint:
+    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,8 +23,8 @@ jobs:
       - name: Run linting
         run: docker compose run dev npm run lint:check
 
-  format:
-    needs: build
+  check-code-format:
+    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -32,8 +32,8 @@ jobs:
       - name: Run format check
         run: docker compose run dev npm run format:check
 
-  test:
-    needs: build
+  run-test-cases:
+    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -41,8 +41,8 @@ jobs:
       - name: Run tests
         run: docker compose run dev npm run test
 
-  push-image-to-dockerhub:
-    needs: [lint, format, test]
+  build-push-prod-image-to-dockerhub:
+    needs: [check-code-lint, check-code-format, run-test-cases]
     runs-on: ubuntu-latest
     outputs:
       sha_short: ${{ steps.vars.outputs.sha_short }}
@@ -66,8 +66,8 @@ jobs:
           docker tag ci-cd-pipeline-prod mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
           docker push mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
 
-  deploy-to-AWS-EC2:
-    needs: push-image-to-dockerhub
+  deploy-prod-image-to-AWS-EC2:
+    needs: build-push-prod-image-to-dockerhub
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -90,4 +90,5 @@ jobs:
             if [ "$(docker ps -a -f name=example-app-api -q)" ]; then
               docker rm example-app-api
             fi
+            docker rmi $(docker images 'mdtazbinur/example-app' -q)
             docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ needs.push-image-to-dockerhub.outputs.sha_short }}
