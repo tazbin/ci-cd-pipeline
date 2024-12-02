@@ -61,6 +61,5 @@ jobs:
       - name: Build and push with commit hash tag
         run: |
           docker compose build dev
-          docker image ls
-          docker tag dev mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
+          docker tag ci-cd-pipeline-dev mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
           docker push mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
