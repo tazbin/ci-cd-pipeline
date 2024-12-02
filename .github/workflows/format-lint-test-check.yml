@@ -44,6 +44,8 @@ jobs:
   push-image-to-dockerhub:
     # needs: [lint, format, test]
     runs-on: ubuntu-latest
+    outputs:
+      sha_short: ${{ steps.vars.outputs.sha_short }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
