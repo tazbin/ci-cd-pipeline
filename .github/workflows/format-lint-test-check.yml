@@ -41,38 +41,38 @@ jobs:
   #     - name: Run tests
   #       run: docker compose run dev npm run test
 
-  # push-image-to-dockerhub:
-  #   needs: [lint, format, test]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+  push-image-to-dockerhub:
+    # needs: [lint, format, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Get short commit hash
-  #       id: vars
-  #       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Get short commit hash
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-  #     - name: Build and push with commit hash tag
-  #       run: |
-  #         docker compose build dev
-  #         docker tag ci-cd-pipeline-dev mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
-  #         docker push mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
+      - name: Build and push with commit hash tag
+        run: |
+          docker compose build dev
+          docker tag ci-cd-pipeline-dev mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
+          docker push mdtazbinur/example-app:${{ steps.vars.outputs.sha_short }}
 
   deploy-to-AWS-EC2:
-    # needs: push-image-to-dockerhub
+    needs: push-image-to-dockerhub
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Debug sha_short value
-        run: echo "sha_short=${{ steps.vars.outputs.sha_short }}"
+        run: echo "sha_short=${{ needs.push-image-to-dockerhub.outputs.sha_short }}"
 
 
       - name: Deploy to AWS-EC2
@@ -82,11 +82,11 @@ jobs:
           username: ${{ secrets.EC2_USER_NAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull mdtazbinur/example-app:3f1a1c9
+            docker pull mdtazbinur/example-app:${{ needs.push-image-to-dockerhub.outputs.sha_short }}
             if [ "$(docker ps -f name=example-app-api -q)" ]; then
               docker stop example-app-api
             fi
             if [ "$(docker ps -a -f name=example-app-api -q)" ]; then
               docker rm example-app-api
             fi
-            docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:3f1a1c9
+            docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ needs.push-image-to-dockerhub.outputs.sha_short }}
