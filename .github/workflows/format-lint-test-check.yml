@@ -74,7 +74,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Debug sha_short value
-        run: echo "sha_short=${{ needs.push-image-to-dockerhub.outputs.sha_short }}"
+        run: echo "sha_short=${{ needs.build-push-prod-image.outputs.sha_short }}"
 
       - name: Deploy to AWS-EC2
         uses: appleboy/ssh-action@master
@@ -83,7 +83,7 @@ jobs:
           username: ${{ secrets.EC2_USER_NAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull mdtazbinur/example-app:${{ needs.push-image-to-dockerhub.outputs.sha_short }}
+            docker pull mdtazbinur/example-app:${{ needs.build-push-prod-image.outputs.sha_short }}
             if [ "$(docker ps -f name=example-app-api -q)" ]; then
               docker stop example-app-api
             fi
@@ -91,4 +91,4 @@ jobs:
               docker rm example-app-api
             fi
             docker rmi $(docker images 'mdtazbinur/example-app' -q)
-            docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ needs.push-image-to-dockerhub.outputs.sha_short }}
+            docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ needs.build-push-prod-image.outputs.sha_short }}
