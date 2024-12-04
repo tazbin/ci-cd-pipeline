@@ -1,7 +1,7 @@
-name: CI
+name: Master Merge Deployment
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
