@@ -12,6 +12,8 @@ services:
     ports:
       - '3000:3000'
     restart: unless-stopped
+    networks:
+      - nodejs-rest-api-network
 
   prod:
     container_name: nodejs-api-prod
@@ -21,3 +23,9 @@ services:
     ports:
       - '3000:3000'
     restart: unless-stopped
+    networks:
+      - nodejs-rest-api-network
+
+networks:
+  nodejs-rest-api-network:
+    driver: bridge
