@@ -6,62 +6,26 @@ on:
       - '*'
 
 jobs:
-  build-dev-image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker compose build dev
-      - name: Save Docker image 
-        run: docker save ci-cd-pipeline-dev > dev-docker-image.tar
-      - name: Upload Docker image
-        uses: actions/upload-artifact@v3
-        with:
-          name: dev-docker-image
-          path: dev-docker-image.tar
-
   check-code-lint:
-    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Download Docker image
-        uses: actions/download-artifact@v3
-        with:
-          name: dev-docker-image
-      - name: Load Docker image
-        run: docker load < dev-docker-image.tar  
       - name: Run linting
         run: docker compose run dev npm run lint:check
 
   check-code-format:
-    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Download Docker image
-        uses: actions/download-artifact@v3
-        with:
-          name: dev-docker-image
-      - name: Load Docker image
-        run: docker load < dev-docker-image.tar  
       - name: Run format check
         run: docker compose run dev npm run format:check
 
   run-test-cases:
-    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Download Docker image
-        uses: actions/download-artifact@v3
-        with:
-          name: dev-docker-image
-      - name: Load Docker image
-        run: docker load < dev-docker-image.tar  
       - name: Run tests
         run: docker compose run dev npm run test
