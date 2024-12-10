@@ -69,11 +69,21 @@ jobs:
           username: ${{ secrets.EC2_USER_NAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Log in to Docker Hub using the access token
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+            # Stop running container
             if [ "$(docker ps -f name=example-app-api -q)" ]; then
               docker stop example-app-api
             fi
+
+            # Remove stopped container
             if [ "$(docker ps -a -f name=example-app-api -q)" ]; then
               docker rm example-app-api
             fi
+
+            # Remove old image
             docker rmi $(docker images 'mdtazbinur/example-app' -q)
+
+            # Pull new image & run container
             docker run -d --name example-app-api -p 80:3000 mdtazbinur/example-app:${{ needs.build-push-prod-image.outputs.sha_short }}
