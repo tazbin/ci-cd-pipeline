@@ -6,16 +6,7 @@ on:
       - '*'
 
 jobs:
-  build-dev-image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker compose build dev
-
   check-code-lint:
-    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,7 +15,6 @@ jobs:
         run: docker compose run dev npm run lint:check
 
   check-code-format:
-    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -33,7 +23,6 @@ jobs:
         run: docker compose run dev npm run format:check
 
   run-test-cases:
-    needs: build-dev-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
