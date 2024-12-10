@@ -15,6 +15,11 @@ jobs:
         run: docker compose build dev
       - name: Save Docker image 
         run: docker save ci-cd-pipeline-dev > dev-docker-image.tar
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v3
+        with:
+          name: dev-docker-image
+          path: dev-docker-image.tar
 
   check-code-lint:
     needs: build-dev-image
@@ -22,6 +27,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Download Docker image
+        uses: actions/download-artifact@v3
+        with:
+          name: dev-docker-image
       - name: Load Docker image
         run: docker load < dev-docker-image.tar  
       - name: Run linting
@@ -33,6 +42,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Download Docker image
+        uses: actions/download-artifact@v3
+        with:
+          name: dev-docker-image
       - name: Load Docker image
         run: docker load < dev-docker-image.tar  
       - name: Run format check
@@ -44,6 +57,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Download Docker image
+        uses: actions/download-artifact@v3
+        with:
+          name: dev-docker-image
       - name: Load Docker image
         run: docker load < dev-docker-image.tar  
       - name: Run tests
