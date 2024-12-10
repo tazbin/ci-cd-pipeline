@@ -83,7 +83,6 @@ jobs:
           username: ${{ secrets.EC2_USER_NAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull mdtazbinur/example-app:${{ needs.build-push-prod-image.outputs.sha_short }}
             if [ "$(docker ps -f name=example-app-api -q)" ]; then
               docker stop example-app-api
             fi
